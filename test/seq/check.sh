@@ -24,4 +24,7 @@ check_value "$(printf "2\n2.5\n3\n3.5\n4\n4.5\n5\n")" "$($seq 2 0.5 5)"
 echo "Checking seq -w"
 check_value "$(printf "001\n002\n003\n004\n")" "$($seq -w 100 | head -n 4)"
 
+echo "Checking seq -s"
+check_value "1:2:3:4" "$($seq -s ":" 4)"
+
 exit 0
