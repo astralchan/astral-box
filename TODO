@@ -8,7 +8,7 @@ The following utilities have yet to be implemented:
 - batch
 - bc
 - cal
-- cat
+- cat [WIP]
 - cd
 - chgrp
 - chmod

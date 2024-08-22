@@ -10,13 +10,9 @@ wc=$current_dir/src/wc
 
 clean_up() {
 	cd "$test_dir" || exit 1
-	rm -f file1.txt file2.txt file3.txt
+	rm -f file*.txt
 	cd "$current_dir" || exit 1
 }
-
-trap clean_up EXIT
-
-clean_up
 
 # Compare $1 and $2
 check_value() {
@@ -28,6 +24,10 @@ check_value() {
 		exit 1
 	fi
 }
+
+trap clean_up EXIT
+
+clean_up
 
 cd "$test_dir" || exit 1
 

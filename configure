@@ -43,6 +43,7 @@ utils="\
  ls \
  true \
  wc \
+ cat \
  seq \
 "
 
