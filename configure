@@ -82,6 +82,7 @@ done)
 
 src/astral-box: src/astral-box.o
 	\$(CC) \$(CFLAGS) -o \$@ src/astral-box.o \$(LDFLAGS)
+src/astral-box.o: src/astral-box.c
 
 clean:
 $(for util in $utils; do
