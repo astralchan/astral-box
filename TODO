@@ -1,6 +1,6 @@
 Link to single binary "astral-box"
 
-The following utilities have yet to be implemented:
+The following utilities:
 
 - alias
 - ar
@@ -10,7 +10,7 @@ The following utilities have yet to be implemented:
 - batch
 - bc
 - cal
-- cat [WIP]
+- cat [COMPLETE]
 - cd
 - chgrp
 - chmod
@@ -112,7 +112,7 @@ The following utilities have yet to be implemented:
 - uudecode
 - uuencode
 - wait
-- wc [WIP]
+- wc [COMPLETE]
 - which
 - who
 - write

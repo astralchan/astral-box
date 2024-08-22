@@ -1,0 +1,8 @@
+config.mk
+Makefile
+
+src/*
+!src/*.c
+
+test/*
+!test/**/*.sh
