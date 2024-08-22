@@ -1,0 +1,35 @@
+.\" Copyright (C) astral
+.\" See COPYING for details.
+
+.TH SEQ 1
+
+.SH NAME
+seq \- generate a sequence of numbers
+
+.SH SYNOPSIS
+.B seq
+[\fIoption\fR]... <\fIupper\fR>
+.br
+.B seq
+[\fIoption\fR]... <\fIlower\fR> <\fIupper\fR>
+.br
+.B seq
+[\fIoption\fR]... <\fIlower\fR> <\fIincr\fR> <\fIupper\fR>
+
+.SH DESCRIPTION
+.B seq
+generates a range of numbers.
+
+.SS OPTIONS
+
+.TP
+.B -f <\fIformat\fR>
+Use printf-style format string. Default is %g.
+
+.TP
+.B -s <\fIseparator\fR>
+Use <\fIseparator\fR> to separate numbers. Default is newline.
+
+.TP
+.B -w <\fIwidth\fR>
+Equalize width by padding with zeros.

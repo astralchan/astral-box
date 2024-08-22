@@ -1,0 +1,34 @@
+.\" Copyright (C) astral
+.\" See COPYING for details.
+
+.TH WC 1
+
+.SH NAME
+wc \- word, line, and byte or character count
+
+.SH SYNOPSIS
+.B wc
+[\fIoption\fR]... [\fIfile\fR]...
+
+.SH DESCRIPTION
+.B wc
+prints number of lines, words, and bytes or characters in each input file, or
+standard input if no \fIfile\fR(s) are given.
+
+.SS OPTIONS
+
+.TP
+.B -c
+Print the byte count.
+
+.TP
+.B -m
+Print the character count.
+
+.TP
+.B -l
+Print the line count.
+
+.TP
+.B -w
+Print the word count.

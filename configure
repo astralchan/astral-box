@@ -1,0 +1,135 @@
+#!/bin/sh
+
+# Copyright (C) astral
+# See COPYING for details.
+
+version=0.0.0-pre-alpha
+
+usage() {
+	cat << _EOF
+usage: $0 [option]...
+
+options:
+  --destdir=*  set DESTDIR  []
+  --prefix=*   set PREFIX   [/usr/local]
+  --help, -h   display this help and exit
+_EOF
+}
+
+# Parse options
+for opt; do
+	val=${opt#--*=}
+	case $opt in
+	--destdir=*) destdir=$val;;
+	--prefix=*) prefix=$val;;
+	--help|-h) usage; exit 0;;
+	--clean) rm -f config.mk Makefile; exit 0;;
+	--*) printf >&2 "unknown option: %s\n" "$opt"; exit 1;;
+	esac
+done
+
+: "${destdir:=}"
+: "${prefix:=/usr/local}"
+
+cat << _EOF
+version: $version
+destdir: $destdir
+prefix:  $prefix
+
+_EOF
+
+utils="\
+ false \
+ ls \
+ true \
+ wc \
+ seq \
+"
+
+echo "utils:"
+for util in $utils; do
+	printf "\t%s\n" "$util"
+done
+
+cat << _EOF > config.mk
+VERSION = $version
+
+SHELL = /bin/sh
+
+DESTDIR = $destdir
+PREFIX  = $prefix
+
+BINDIR = \$(DESTDIR)\$(PREFIX)/bin
+MANDIR = \$(DESTDIR)\$(PREFIX)/share/man
+_EOF
+
+cp Makefile.in Makefile
+
+cat << _EOF >> Makefile
+
+all: \\
+$(for util in $utils; do
+	printf "\tsrc/%s %c\n" "$util" "\\"
+done)
+	src/astral-box
+
+$(for util in $utils; do
+	printf "src/%s: src/%s.o\n" "$util" "$util"
+	printf "\t\$(CC) \$(CFLAGS) -o \$@ src/%s.o \$(LDFLAGS)\n" "$util"
+	printf "src/%s.o: src/%s.c\n\n" "$util" "$util"
+done)
+
+src/astral-box: src/astral-box.o
+	\$(CC) \$(CFLAGS) -o \$@ src/astral-box.o \$(LDFLAGS)
+
+clean:
+$(for util in $utils; do
+	printf "\t@rm -f src/%s src/%s.o\n" "$util" "$util"
+done)
+	@rm -f src/astral-box src/astral-box.o
+
+	@rm -f astral-box-*
+
+install:
+	@mkdir -p \$(BINDIR)
+	@mkdir -p \$(MANDIR)/man1
+
+	@cp src/astral-box \$(BINDIR)
+	@chmod 755 \$(BINDIR)/astral-box
+	@cp doc/astral-box.1 \$(MANDIR)/man1
+	@chmod 644 \$(MANDIR)/man1/astral-box.1
+$(for util in $utils; do
+	printf "\t@cp src/%s \$(BINDIR)\n" "$util"
+	printf "\t@chmod 755 \$(BINDIR)/%s\n" "$util"
+	printf "\t@cp doc/%s.1 \$(MANDIR)/man1\n" "$util"
+	printf "\t@chmod 644 \$(MANDIR)/man1/%s.1\n" "$util"
+done)
+
+uninstall:
+$(for util in $utils; do
+	printf "\t@rm -f \$(BINDIR)/%s\n" "$util"
+	printf "\t@rm -f \$(MANDIR)/man1/%s.1\n" "$util"
+done)
+	@rm -f \$(BINDIR)/astral-box
+	@rm -f \$(MANDIR)/man1/astral-box.1
+
+check: check-all
+
+check-all: \\
+$(for util in $utils; do
+	printf "\tcheck-%s %c\n" "$util" "\\"
+done)
+	check-astral-box
+
+$(for util in $utils; do
+	printf "check-%s:\n" "$util"
+	printf "\t@printf \"Checking %s...\\\n\"\n" "$util"
+	printf "\t@\$(SHELL) test/%s/check.sh\n\n" "$util"
+done)
+
+check-astral-box:
+	@printf "Checking astral-box...\n"
+	@\$(SHELL) test/astral-box/check.sh
+_EOF
+
+exit 0

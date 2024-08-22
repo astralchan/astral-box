@@ -1,0 +1,27 @@
+# Build
+
+To configure astral-box, run
+
+	./configure [option]...
+
+For options, run
+
+	./configure --help
+
+To build astral-box, run
+
+	make astral-box
+
+To build all utilities, run
+
+	make
+
+# Install
+
+To install astral-box, run
+
+	make astral-box-install
+
+To install all utilities, run
+
+	make install
