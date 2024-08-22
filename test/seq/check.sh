@@ -27,4 +27,8 @@ check_value "$(printf "001\n002\n003\n004\n")" "$($seq -w 100 | head -n 4)"
 echo "Checking seq -s"
 check_value "1:2:3:4" "$($seq -s ":" 4)"
 
+echo "Checking seq pasring"
+check_value "$(printf "7\n8\n9\n10\n")" "$($seq 7 1e1)"
+check_value "$(printf "11\n11.5\n12\n")" "$($seq 11 0.5 +1.2e1)"
+
 exit 0
