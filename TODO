@@ -13,7 +13,7 @@ The following utilities:
 - chgrp
 - chmod
 - chown
-- cksum
+- cksum [WIP]
 - cmp
 - comm
 - command
