@@ -3,6 +3,7 @@ Makefile
 
 src/*
 !src/*.c
+!src/*.h
 
 test/*
 !test/**/*.sh

@@ -5,6 +5,8 @@
 
 #define _POSIX_C_SOURCE 200809L
 
+#include "utils.h"
+
 #include <sys/stat.h>
 
 #include <dirent.h>
@@ -66,7 +68,7 @@ list_contents(const char *path, struct options *opts)
 }
 
 int
-main(int argc, char *argv[])
+ls_main(int argc, char *argv[])
 {
 	/* Initialize default options */
 	struct options opts = {
@@ -83,7 +85,7 @@ main(int argc, char *argv[])
 			opts.Aflag = true;
 			break;
 		case '?':
-			fprintf(stderr, "unknown option -'%c'\n", optopt);
+			fprintf(stderr, "ls: unknown option -%c\n", optopt);
 			return EXIT_FAILURE;
 		}
 	}

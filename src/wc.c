@@ -5,6 +5,8 @@
 
 #define _POSIX_C_SOURCE 200809L
 
+#include "utils.h"
+
 #include <ctype.h>
 #include <locale.h>
 #include <stdbool.h>
@@ -95,7 +97,7 @@ print_counts(struct counts *cnts, struct options *opts)
 }
 
 int
-main(int argc, char *argv[])
+wc_main(int argc, char *argv[])
 {
 	setlocale(LC_ALL, "");
 	FILE *fp;
@@ -121,7 +123,7 @@ main(int argc, char *argv[])
 			opts.mflag = true;
 			break;
 		case '?':
-			fprintf(stderr, "unknown option: -%c\n", optopt);
+			fprintf(stderr, "wc: unknown option: -%c\n", optopt);
 			return EXIT_FAILURE;
 		}
 	}

@@ -5,6 +5,8 @@
 
 #define _POSIX_C_SOURCE 200809L
 
+#include "utils.h"
+
 #include <ctype.h>
 #include <math.h>
 #include <stdarg.h>
@@ -78,7 +80,7 @@ parse_num(const char *str)
 }
 
 int
-main(int argc, char *argv[])
+seq_main(int argc, char *argv[])
 {
 	struct options opts = {
 		.fflag = false,
@@ -102,9 +104,10 @@ main(int argc, char *argv[])
 			opts.wflag = true;
 			break;
 		case ':':
-			fprintf(stderr, "option -%c requires an argument\n", optopt);
+			fprintf(stderr, "seq: option -%c requires an argument\n", optopt);
 			return EXIT_FAILURE;
 		case '?':
+			fprintf(stderr, "seq: unknown option -%c\n", optopt);
 			return EXIT_FAILURE;
 		}
 	}

@@ -69,21 +69,24 @@ cp Makefile.in Makefile
 
 cat << _EOF >> Makefile
 
-all: \\
+all: src/astral-box links
+
+src/astral-box: src/astral-box.o $(for util in $utils; do printf "src/%s.o " "$util"; done)
+	\$(CC) \$(CFLAGS) -o \$@ src/astral-box.o \\
 $(for util in $utils; do
-	printf "\tsrc/%s %c\n" "$util" "\\"
+	printf "\t\tsrc/%s.o %c\n" "$util" "\\";
 done)
-	src/astral-box
+		\$(LDFLAGS)
 
 $(for util in $utils; do
-	printf "src/%s: src/%s.o\n" "$util" "$util"
-	printf "\t\$(CC) \$(CFLAGS) -o \$@ src/%s.o \$(LDFLAGS)\n" "$util"
-	printf "src/%s.o: src/%s.c\n\n" "$util" "$util"
+	printf "src/%s.o: src/%s.c\n" "$util" "$util"
 done)
-
-src/astral-box: src/astral-box.o
-	\$(CC) \$(CFLAGS) -o \$@ src/astral-box.o \$(LDFLAGS)
 src/astral-box.o: src/astral-box.c
+
+links:
+$(for util in $utils; do
+	printf "\tln -sf astral-box src/%s\n" "$util"
+done)
 
 clean:
 $(for util in $utils; do
@@ -102,8 +105,7 @@ install:
 	@cp doc/astral-box.1 \$(MANDIR)/man1
 	@chmod 644 \$(MANDIR)/man1/astral-box.1
 $(for util in $utils; do
-	printf "\t@cp src/%s \$(BINDIR)\n" "$util"
-	printf "\t@chmod 755 \$(BINDIR)/%s\n" "$util"
+	printf "\t@ln -sf astral-box \$(BINDIR)/%s\n" "$util"
 	printf "\t@cp doc/%s.1 \$(MANDIR)/man1\n" "$util"
 	printf "\t@chmod 644 \$(MANDIR)/man1/%s.1\n" "$util"
 done)

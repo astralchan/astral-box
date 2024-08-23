@@ -5,6 +5,8 @@
 
 #define _POSIX_C_SOURCE 200809L
 
+#include "utils.h"
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,7 +50,7 @@ cat_bytes(FILE *fp)
 }
 
 int
-main(int argc, char *argv[])
+cat_main(int argc, char *argv[])
 {
 	struct options opts = {
 		.uflag = false,
@@ -60,7 +62,7 @@ main(int argc, char *argv[])
 			opts.uflag = true;
 			break;
 		case '?':
-			fprintf(stderr, "unknown option -%c\n", optopt);
+			fprintf(stderr, "cat: unknown option -%c\n", optopt);
 			return EXIT_FAILURE;
 		}
 	}

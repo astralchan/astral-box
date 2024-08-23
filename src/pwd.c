@@ -5,6 +5,8 @@
 
 #define _POSIX_C_SOURCE 200809L
 
+#include "utils.h"
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,7 +18,7 @@ struct options {
 };
 
 int
-main(int argc, char *argv[])
+pwd_main(int argc, char *argv[])
 {
 	struct options opts = {
 		.Lflag = true,
