@@ -12,6 +12,16 @@ To build astral-box, run
 
 	make
 
+# Test
+
+To run all of the tests, run
+
+	make check
+
+To run the tests for a specific <util>, run
+
+	make check-<util>
+
 # Install
 
 To install astral-box, run
