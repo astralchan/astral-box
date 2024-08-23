@@ -83,8 +83,10 @@ $(for util in $utils; do
 done)
 src/astral-box.o: src/astral-box.c
 
-links:
+links: $(for util in $utils; do printf "src/%s " "$util"; done)
+
 $(for util in $utils; do
+	printf "src/%s:\n" "$util"
 	printf "\tln -sf astral-box src/%s\n" "$util"
 done)
 
