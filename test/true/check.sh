@@ -3,11 +3,14 @@
 # Copyright (C) astral
 # See COPYING for details.
 
-if ./src/true; then
-    echo "true test passed"
+. test/common.sh
+
+echo "checking true return"
+if $command; then
+	echo "check passed"
 else
-    echo "true test failed"
-    exit 1
+	echo "check failed"
+	exit 1
 fi
 
 exit 0
