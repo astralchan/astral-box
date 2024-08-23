@@ -45,6 +45,7 @@ utils="\
  wc \
  cat \
  seq \
+ pwd \
 "
 
 echo "utils:"

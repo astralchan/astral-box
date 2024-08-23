@@ -76,7 +76,7 @@ The following utilities:
 - pr
 - printf
 - ps
-- pwd
+- pwd [WIP]
 - read
 - readlink
 - realpath
