@@ -1,7 +1,7 @@
 #!/bin/sh
 
 check_value() {
-	printf "expected:\n%s\ngot:\n%s\n" "$1" "$2"
+	printf "expected:\n%s\nreceived:\n%s\n" "$1" "$2"
 	if [ "$1" = "$2" ]; then
 		echo "check passed"
 	else
