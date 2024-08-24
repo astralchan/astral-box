@@ -131,6 +131,16 @@ printf_main(int argc, char *argv[])
 			case 'd':
 				printf("%d", atoi(argv[index++]));
 				break;
+			case 'l':
+				switch (*++p) {
+				case 'd':
+					printf("%ld", atol(argv[index++]));
+					break;
+				default:
+					fprintf(stderr, "printf: unknown format specifier: %c\n", *p);
+					return EXIT_FAILURE;
+				}
+				break;
 			default:
 				fprintf(stderr, "printf: unknown format specifier: %c\n", *p);
 				return EXIT_FAILURE;
