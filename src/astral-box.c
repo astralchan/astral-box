@@ -37,6 +37,10 @@ main(int argc, char *argv[])
 		return printf_main(argc, argv);
 	else if (!strcmp(cmd, "echo"))
 		return echo_main(argc, argv);
+	else if (!strcmp(cmd, "head"))
+		return head_main(argc, argv);
+	else if (!strcmp(cmd, "tail"))
+		return tail_main(argc, argv);
 	else {
 		fprintf(stderr, "astral-box: %s: command not found\n", cmd);
 		return EXIT_FAILURE;

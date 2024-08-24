@@ -50,6 +50,8 @@ utils="\
  cal \
  printf \
  echo \
+ head \
+ tail \
 "
 
 echo "utils:"
