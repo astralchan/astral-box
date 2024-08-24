@@ -27,7 +27,7 @@ The following utilities:
 - diff
 - dirname
 - du
-- echo
+- echo [WIP]
 - ed
 - env
 - expand

@@ -49,6 +49,7 @@ utils="\
  cksum \
  cal \
  printf \
+ echo \
 "
 
 echo "utils:"
