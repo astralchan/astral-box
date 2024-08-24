@@ -12,6 +12,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+struct state {
+	bool inFmt;
+	bool inEsc;
+	char val;
+};
+
 int
 printf_main(int argc, char *argv[])
 {
@@ -23,29 +29,43 @@ printf_main(int argc, char *argv[])
 	--argc;
 	++argv;
 
-	bool inFmt, inEsc;
-	inFmt = inEsc = false;
+	struct state s = {
+		.inFmt = false,
+		.inEsc = false,
+		.val = '\0',
+	};
 	const char *fmt = argv[0];
 
 	int index = 1;
 	for (const char *p = fmt; *p; ++p) {
-		if (!inEsc && !inFmt && *p != '%' && *p != '\\') {
-			putchar(*p);
+		s.val = *p;
+
+		if (!s.inEsc &&
+		    !s.inFmt &&
+		    s.val != '%' &&
+		    s.val != '\\') {
+			putchar(s.val);
 			continue;
 		}
 
-		if (!inFmt && *p == '%') {
-			inFmt = true;
+		if (s.inFmt && s.val == '%') {
+			putchar('%');
+			s.inFmt = false;
 			continue;
 		}
 
-		if (!inEsc && *p == '\\') {
-			inEsc = true;
+		if (!s.inFmt && s.val == '%') {
+			s.inFmt = true;
 			continue;
 		}
 
-		if (inEsc) {
-			switch (*p) {
+		if (!s.inEsc && s.val == '\\') {
+			s.inEsc = true;
+			continue;
+		}
+
+		if (s.inEsc) {
+			switch (s.val) {
 			case 'n':
 				putchar('\n');
 				break;
@@ -88,7 +108,7 @@ printf_main(int argc, char *argv[])
 				break;
 			}
 
-			inEsc = false;
+			s.inEsc = false;
 			continue;
 		}
 
@@ -97,8 +117,8 @@ printf_main(int argc, char *argv[])
 		 * - implement more format specifiers
 		 * - verify input
 		 */
-		if (inFmt) {
-			switch (*p) {
+		if (s.inFmt) {
+			switch (s.val) {
 			case 's':
 				printf("%s", argv[index++]);
 				break;
@@ -111,7 +131,7 @@ printf_main(int argc, char *argv[])
 				return EXIT_FAILURE;
 			}
 
-			inFmt = false;
+			s.inFmt = false;
 			continue;
 		}
 	}

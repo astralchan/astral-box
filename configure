@@ -78,7 +78,8 @@ src/astral-box: \\
 	src/astral-box.o \\
 $(for util in $utils; do printf "\tsrc/%s.o %c\n" "$util" "\\"; done | head -n-1)
 $(for util in $utils; do printf "\tsrc/%s.o\n" "$util"; done | tail -n1)
-	\$(CC) \$(CFLAGS) -o \$@ src/astral-box.o \\
+	\$(CC) \$(CFLAGS) -o \$@ \\
+	    src/astral-box.o \\
 $(for util in $utils; do printf "\t    src/%s.o %c\n" "$util" "\\"; done)
 	    \$(LDFLAGS)
 
