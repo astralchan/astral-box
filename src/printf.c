@@ -118,6 +118,11 @@ printf_main(int argc, char *argv[])
 		 * - verify input
 		 */
 		if (s.inFmt) {
+			if (index >= argc) {
+				fprintf(stderr, "printf: not enough arguments\n");
+				return EXIT_FAILURE;
+			}
+
 			switch (s.val) {
 			case 's':
 				printf("%s", argv[index++]);
