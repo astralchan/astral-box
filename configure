@@ -48,6 +48,7 @@ utils="\
  pwd \
  cksum \
  cal \
+ printf \
 "
 
 echo "utils:"

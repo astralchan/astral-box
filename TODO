@@ -72,7 +72,7 @@ The following utilities:
 - pathchk
 - pax
 - pr
-- printf
+- printf [WIP]
 - ps
 - pwd [WIP]
 - read

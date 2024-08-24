@@ -33,6 +33,8 @@ main(int argc, char *argv[])
 		return wc_main(argc, argv);
 	else if (!strcmp(cmd, "cksum"))
 		return cksum_main(argc, argv);
+	else if (!strcmp(cmd, "printf"))
+		return printf_main(argc, argv);
 	else {
 		fprintf(stderr, "astral-box: %s: command not found\n", cmd);
 		return EXIT_FAILURE;

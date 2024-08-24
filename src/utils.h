@@ -15,5 +15,6 @@ int true_main(void);
 int wc_main(int argc, char *argv[]);
 int cksum_main(int argc, char *argv[]);
 int cal_main(int argc, char *argv[]);
+int printf_main(int argc, char *argv[]);
 
 #endif /* !_UTIL_H */
