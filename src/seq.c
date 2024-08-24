@@ -28,11 +28,6 @@ static bool isnum(const char *str);
 static double parse_num(const char *str);
 
 /*
- * TODO: Implement -f flag for formatting
- */
-static void vseqf(const char *fmt, va_list ap);
-
-/*
  * check if string is decimal, floating, or scientific notation
  */
 static bool
