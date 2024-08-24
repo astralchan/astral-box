@@ -12,6 +12,11 @@
 #include <stdint.h>
 
 /* ISO/IEC 8802-3:1996 */
+
+/*
+ * Generating polynomial:
+ * G(x)=x32+x26+x23+x22+x16+x12+x11+x10+x8+x7+x5+x4+x2+x+1
+ */
 #define CKSUM_POLY 0x04C11DB7
 
 /*
@@ -28,7 +33,7 @@ cksum_main(int argc, char *argv[])
 		return EXIT_SUCCESS;
 	}
 
-	for (int i = 1; i < argc; i++)
+	for (int i = 1; i < argc; ++i)
 		printf("%s: cksum: not implemented\n", argv[i]);
 
 	return EXIT_SUCCESS;

@@ -7,7 +7,7 @@ The following utilities:
 - basename
 - batch
 - bc
-- cal
+- cal [WIP]
 - cat [COMPLETE]
 - cd
 - chgrp

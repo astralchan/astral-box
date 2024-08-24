@@ -47,6 +47,7 @@ utils="\
  seq \
  pwd \
  cksum \
+ cal \
 "
 
 echo "utils:"
@@ -72,23 +73,24 @@ cat << _EOF >> Makefile
 
 all: src/astral-box links
 
-src/astral-box: src/astral-box.o $(for util in $utils; do printf "src/%s.o " "$util"; done)
+src/astral-box: \\
+	src/astral-box.o \\
+$(for util in $utils; do printf "\tsrc/%s.o %c\n" "$util" "\\"; done | head -n-1)
+$(for util in $utils; do printf "\tsrc/%s.o\n" "$util"; done | tail -n1)
 	\$(CC) \$(CFLAGS) -o \$@ src/astral-box.o \\
-$(for util in $utils; do
-	printf "\t\tsrc/%s.o %c\n" "$util" "\\";
-done)
-		\$(LDFLAGS)
+$(for util in $utils; do printf "\t    src/%s.o %c\n" "$util" "\\"; done)
+	    \$(LDFLAGS)
 
-$(for util in $utils; do
-	printf "src/%s.o: src/%s.c\n" "$util" "$util"
-done)
 src/astral-box.o: src/astral-box.c
+$(for util in $utils; do printf "src/%s.o: src/%s.c\n" "$util" "$util"; done)
 
-links: $(for util in $utils; do printf "src/%s " "$util"; done)
+links: \\
+$(for util in $utils; do printf "\tsrc/%s %c\n" "$util" "\\"; done | head -n-1)
+$(for util in $utils; do printf "\tsrc/%s\n" "$util"; done | tail -n1)
 
 $(for util in $utils; do
-	printf "src/%s:\n" "$util"
-	printf "\tln -sf astral-box src/%s\n" "$util"
+    printf "src/%s:\n" "$util"
+    printf "\tln -sf astral-box src/%s\n" "$util"
 done)
 
 clean:
@@ -124,10 +126,9 @@ done)
 check: check-all
 
 check-all: \\
-$(for util in $utils; do
-	printf "\tcheck-%s %c\n" "$util" "\\"
-done)
-	check-astral-box
+	check-astral-box \\
+$(for util in $utils; do printf "\tcheck-%s %c\n" "$util" "\\"; done | head -n-1)
+$(for util in $utils; do printf "\tcheck-%s\n" "$util"; done | tail -n1)
 
 $(for util in $utils; do
 	printf "check-%s:\n" "$util"
