@@ -12,7 +12,7 @@ check_value() {
 
 eval "current_dir=$(pwd)"
 eval "test_dir=${current_dir}/$(dirname "$0")"
-eval "command=$(printf "%s/src/%s" "$current_dir" "${test_dir##*/}")"
+eval "command=${current_dir}/src/${test_dir##*/}"
 
 clean_up() {
 	cd "$test_dir" || exit 1
