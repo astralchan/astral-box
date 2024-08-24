@@ -5,11 +5,11 @@
 
 . test/common.sh
 
-echo "checking false return"
+echo "Checking false return"
 if ! $command; then
-	echo "check passed"
+	echo "Check passed"
 else
-	echo "check failed"
+	echo "Check failed"
 	exit 1
 fi
 

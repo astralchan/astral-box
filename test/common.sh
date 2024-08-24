@@ -1,11 +1,11 @@
 #!/bin/sh
 
 check_value() {
-	printf "expected:\n%s\nreceived:\n%s\n" "$1" "$2"
+	printf "Expected:\n%s\nReceived:\n%s\n" "$1" "$2"
 	if [ "$1" = "$2" ]; then
-		echo "check passed"
+		echo "Check passed"
 	else
-		echo "check failed"
+		echo "Check failed"
 		exit 1
 	fi
 }
