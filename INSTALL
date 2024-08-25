@@ -1,5 +1,15 @@
 # Build
 
+## From source
+
+To generate the configure script and Makefile with m4, run
+
+	./bootstrap
+
+Then build as if from release.
+
+## From release
+
 To configure astral-box, run
 
 	./configure [option]...

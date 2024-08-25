@@ -1,0 +1,47 @@
+#!/bin/sh
+
+version=0.0.0-pre-alpha
+
+usage() {
+	cat << _EOF
+usage: $0 [option]...
+
+options:
+  --destdir=*    set DESTDIR []
+  --prefix=*     set PREFIX  [/usr/local]
+  --clean	 remove generated files
+  --help, -h     display this help and exit
+  --version, -v  output version information and exit
+_EOF
+}
+
+# Parse options
+for opt; do
+	val=${opt#--*=}
+	case $opt in
+	--destdir=*) destdir=$val;;
+	--prefix=*) prefix=$val;;
+	--clean) rm -f config.mk Makefile configure; exit 0;;
+	--help|-h) usage; exit 0;;
+	--version|-v) echo $version; exit 0;;
+	esac
+done
+
+: "${destdir:=}"
+: "${prefix:=/usr/local}"
+
+cat << _EOF
+version: $version
+destdir: $destdir
+prefix:  $prefix
+_EOF
+
+cat << _EOF > config.mk
+VERSION = $version
+
+DESTDIR = $destdir
+PREFIX  = $prefix
+
+BINDIR = \$(DESTDIR)\$(PREFIX)/bin
+MANDIR = \$(DESTDIR)\$(PREFIX)/share/man
+_EOF

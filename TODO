@@ -1,3 +1,5 @@
+Switch to m4 to generate src/astral-box.c, src/utils.h, and Makefile targets.
+
 The following utilities:
 
 - alias

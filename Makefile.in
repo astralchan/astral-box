@@ -14,8 +14,9 @@ include config.mk
 default: all
 
 dist: clean
+	./bootstrap
 	@mkdir -p astral-box-$(VERSION)
-	@cp -R COPYING configure Makefile.in README src doc test astral-box-$(VERSION)
+	@cp -R COPYING configure Makefile README src doc test astral-box-$(VERSION)
 	@pax -wf astral-box-$(VERSION).tar astral-box-$(VERSION)
 	@rm -rf astral-box-$(VERSION)
 	@gzip -k astral-box-$(VERSION).tar

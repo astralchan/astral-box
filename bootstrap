@@ -1,0 +1,4 @@
+#!/bin/sh
+
+m4 m4/configure.m4 > configure && chmod a+x configure
+m4 m4/Makefile.m4 > Makefile
