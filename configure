@@ -133,6 +133,8 @@ echo "Generating config.mk..."
 cat > config.mk << _EOF
 VERSION = $version
 
+SHELL = /bin/sh
+
 DESTDIR = $destdir
 PREFIX  = $prefix
 
