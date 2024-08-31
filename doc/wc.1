@@ -1,0 +1,41 @@
+.\" Copyright (C) astral
+.\" See COPYING for details.
+
+.TH WC 1
+
+.SH NAME
+wc \- count lines, words, and characters
+
+.SH SYNOPSIS
+.B wc
+[\fIOPTION\fR]... [\fIFILE\fR]...
+
+.SH DESCRIPTION
+.B wc
+prints the number of lines, words, and bytes of stdin or the specified
+\fIFILE\fR by default.
+
+If more than one \fIFILE\fR is specified, the totals are printed at the end.
+
+If \fIFILE\fR is a dash (\fI-\fR), read from stdin.
+
+.SS OPTIONS
+
+.TP
+.BR \-l
+Print the number of lines.
+
+.TP
+.BR \-w
+Print the number of words.
+
+.TP
+.BR \-c
+Print the number of bytes.
+
+.TP
+.BR \-m
+Print the number of characters.
+
+.SH SEE ALSO
+.BR cksum (1)

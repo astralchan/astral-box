@@ -1,0 +1,144 @@
+From https://pubs.opengroup.org/onlinepubs/9699919799.2018edition/idx/utilities.html
+
+- admin
+- alias
+- ar
+- asa [WIP]
+- at
+- basename [WIP]
+- batch
+- bc
+- bg
+- cal
+- cat [COMPLETE]
+- cd
+- chgrp
+- chmod
+- chown
+- cksum [WIP]
+- cmp [WIP]
+- comm [WIP]
+- command
+- compress
+- cp
+- crontab
+- cut [WIP]
+- cxref
+- date
+- dd
+- delta
+- df
+- diff
+- dirname [WIP]
+- du
+- echo [COMPLETE]
+- env
+- expand
+- expr
+- false [COMPLETE]
+- fc
+- fg
+- file
+- find
+- fold
+- fuser
+- gencat
+- get
+- getconf
+- getopts
+- grep
+- hash
+- head
+- iconv
+- id
+- ipcrm
+- ipcs
+- jobs
+- join
+- kill
+- link
+- ln
+- locale
+- localedef
+- logger
+- logname
+- lp
+- ls
+- mesg
+- mkdir
+- mkfifo
+- more
+- mv
+- newgrp
+- nice
+- nl
+- nm
+- nohup
+- od
+- paste
+- patch
+- pathchk
+- pr
+- printf [WIP]
+- prs
+- ps
+- pwd
+- qalter
+- qdel
+- qhold
+- qmove
+- qmsg
+- qrerun
+- qrls
+- qselect
+- qsig
+- qstat
+- qsub
+- read
+- renice
+- rm
+- rmdel
+- rmdir
+- sed
+- seq [COMPLETE]
+- sleep
+- sort
+- split
+- strings
+- strip
+- stty
+- tabs
+- tail
+- talk
+- tee [WIP]
+- test
+- time
+- touch
+- tput
+- tr
+- true [COMPLETE]
+- tsort
+- tty
+- type
+- ulimit
+- umask
+- unalias
+- uname
+- uncompress
+- unexpand
+- unget
+- uniq
+- unlink
+- uucp
+- uudecode
+- uuencode
+- uustat
+- uux
+- wait
+- wc [COMPLETE]
+- what
+- who
+- write
+- xargs
+- yes [WIP]
+- zcat

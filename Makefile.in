@@ -1,0 +1,31 @@
+# Copyright (C) astral
+# See COPYING for details.
+
+.POSIX:
+
+include config.mk
+
+.SUFFIXES:
+.SUFFIXES: .c .o
+
+.c.o:
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+default: all
+
+dist: clean
+	mkdir -p astral-box-$(VERSION)
+	cp -R \
+		COPYING \
+		README \
+		INSTALL \
+		configure \
+		Makefile.in \
+		src \
+		doc \
+		test \
+		astral-box-$(VERSION)
+	pax -wf astral-box-$(VERSION).tar astral-box-$(VERSION)
+	rm -rf astral-box-$(VERSION)
+	gzip -k astral-box-$(VERSION).tar
+	xz astral-box-$(VERSION).tar

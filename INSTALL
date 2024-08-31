@@ -1,0 +1,32 @@
+# Build
+
+To build astral-box, run
+
+	./configure
+	make
+
+For more configuration options, see
+
+	./configure --help
+
+# Test
+
+To run all of the checks, run
+
+	make check
+
+To run the check for a specific <util>, run
+
+	make check-<util>
+
+# Install
+
+To install astral-box, run
+
+	make install
+
+# Uninstall
+
+To uninstall astral-box, run
+
+	make uninstall

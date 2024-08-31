@@ -1,0 +1,40 @@
+.\" Copyright (C) astral
+.\" See COPYING for details.
+
+.TH YES 1
+
+.SH NAME
+yes \- print a string forever
+
+.SH SYNOPSIS
+.B yes
+[\fIstring\fR]
+
+.SH DESCRIPTION
+.B yes
+will print "y" or the specificed \fIstring\fR forever.
+
+.SH EXAMPLES
+
+.nf
+.B No arguments
+$ yes
+y
+y
+y
+.B "..."
+.fi
+
+.nf
+.B With arguments
+$ yes "Hello, world"
+Hello, world
+Hello, world
+Hello, world
+.B "..."
+.fi
+
+.nf
+.B Into a read
+$ yes "foo" | { read -r var; echo "$var"; }
+.fi

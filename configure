@@ -1,0 +1,210 @@
+#!/bin/sh
+
+# Copyright (C) astral
+# See COPYING for details.
+
+version=0.0.0-pre-alpha
+
+utils="
+ true
+ false
+ wc
+ echo
+ printf
+ cat
+ asa
+ cut
+ seq
+ yes
+ basename
+ dirname
+ cksum
+ cmp
+ comm
+ tee
+"
+
+usage() {
+	cat << _EOF
+usage: $0 [option]...
+
+options:
+  --destdir=*  set DESTDIR  []
+  --prefix=*   set PREFIX   [/usr/local]
+  --clean      remove generated files and exit
+  --help, -h   display this help and exit
+_EOF
+}
+
+check_cmd() {
+	printf "Checking for %s... " "$1"
+	if [ "$(command -v "$1")" ]; then
+		printf "[ok]\n"
+	else
+		printf "[not found]\n"
+		exit 1
+	fi
+}
+
+for opt; do
+	val=${opt#--*=}
+	case $opt in
+	--destdir=*) destdir=$val ;;
+	--prefix=*) prefix=$val ;;
+	--clean)
+		rm -f src/utils.h
+		rm -f src/astral-box.c
+		rm -f config.mk
+		rm -f Makefile
+		exit 0;;
+	--help|-h) usage; exit 0 ;;
+	esac
+done
+
+# Commands used to generate files
+config_cmds="
+ head
+ tail
+ printf
+ cat
+ echo
+"
+for cmd in $config_cmds; do
+	check_cmd "$cmd"
+done
+
+: "${destdir:=}"
+: "${prefix:=/usr/local}"
+
+# Show confugration infomation and utilities
+cat << _EOF
+DESTDIR : $destdir
+PREFIX  : $prefix
+
+utils:
+$(for util in $utils; do echo "- $util"; done)
+_EOF
+
+# Generate src/utils.h
+echo "Generating src/utils.h..."
+cat > src/utils.h << _EOF
+#ifndef _UTILS_H
+#define _UTILS_H
+
+$(for util in $utils; do
+	printf "int %s_main(int argc, char *argv[]);\n" "$util"
+done)
+
+#endif /* !_UTILS_H */
+_EOF
+
+# Generate src/astral-box.c
+echo "Generating src/astral-box.c..."
+cat > src/astral-box.c << _EOF
+#define _POSIX_C_SOURCE 200809L
+
+#include "utils.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int
+main(int argc, char *argv[])
+{
+	char *cmd = strrchr(argv[0], '/');
+	cmd = cmd ? cmd + 1 : argv[0];
+
+$(for util in $utils; do
+	printf "\tif (strcmp(cmd, \"%s\") == 0)\n" "$util"
+	printf "\t\treturn %s_main(argc, argv);\n" "$util"
+done | head -n2)
+$(for util in $utils; do
+	printf "\telse if (strcmp(cmd, \"%s\") == 0)\n" "$util"
+	printf "\t\treturn %s_main(argc, argv);\n" "$util"
+done | tail -n+3)
+
+	return EXIT_SUCCESS;
+}
+_EOF
+
+# Generate config.mk
+echo "Generating config.mk..."
+cat > config.mk << _EOF
+VERSION = $version
+
+DESTDIR = $destdir
+PREFIX  = $prefix
+
+BINDIR = \$(DESTDIR)\$(PREFIX)/bin
+MANDIR = \$(DESTDIR)\$(PREFIX)/share/man
+_EOF
+
+# Generate Makefile from Makefile.in
+echo "Generating Makefile..."
+cp Makefile.in Makefile
+cat >> Makefile << _EOF
+
+all: src/astral-box \\
+$(for util in $utils; do printf "\tsrc/%s \\\\\n" "$util"; done | head -n-1)
+$(for util in $utils; do printf "\tsrc/%s\n" "$util"; done | tail -n1)
+
+# Link final binary
+src/astral-box: src/astral-box.o \\
+$(for util in $utils; do printf "\tsrc/%s.o \\\\\n" "$util"; done | head -n-1)
+$(for util in $utils; do printf "\tsrc/%s.o\n" "$util"; done | tail -n1)
+	\$(CC) \$(CFLAGS) -o \$@ src/astral-box.o \\
+$(for util in $utils; do printf "\t\tsrc/%s.o \\\\\n" "$util"; done)
+		-lm \\
+		\$(LDFLAGS)
+
+# Generate object files
+src/astral-box.o: src/astral-box.c
+$(for util in $utils; do printf "src/%s.o: src/%s.c\n" "$util" "$util"; done)
+
+# Make symbolic links
+$(for util in $utils; do
+	printf "src/%s: src/astral-box\n" "$util"
+	printf "\tln -sf astral-box \$@\n"
+done)
+
+# Clean all build files
+clean:
+	@rm -f src/astral-box src/astral-box.o
+$(for util in $utils; do printf "\t@rm -f src/%s src/%s.o\n" "$util" "$util"; done)
+	@rm -f astral-box-*
+
+check: check-all
+
+check-all: \\
+$(for util in $utils; do printf "\tcheck-%s \\\\\n" "$util"; done | head -n-1)
+$(for util in $utils; do printf "\tcheck-%s\n" "$util"; done | tail -n1)
+
+$(for util in $utils; do
+	printf "check-%s:\n" "$util"
+	printf "\t@echo \"Checking %s...\"\n" "$util"
+	printf "\t@\$(SHELL) test/%s/check.sh\n" "$util"
+done)
+
+install:
+	@mkdir -p \$(BINDIR)
+	@mkdir -p \$(MANDIR)/man1
+
+	@cp src/astral-box \$(BINDIR)
+	@chmod 755 \$(BINDIR)/astral-box
+
+$(for util in $utils; do
+	printf "\t@ln -sf astral-box \$(BINDIR)/%s\n" "$util"
+	printf "\t@cp doc/%s.1 \$(MANDIR)/man1\n" "$util"
+	printf "\t@chmod 644 \$(MANDIR)/man1/%s.1\n" "$util"
+done)
+
+uninstall:
+	@rm -f \$(BINDIR)/astral-box
+$(for util in $utils; do
+	printf "\t@rm -f \$(BINDIR)/%s\n" "$util"
+	printf "\t@rm -f \$(MANDIR)/man1/%s.1\n" "$util"
+done)
+_EOF
+
+exit 0
