@@ -122,11 +122,6 @@ seq_main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	if (argc < 1) {
-		fprintf(stderr, "missing range\n");
-		return EXIT_FAILURE;
-	}
-
 	/* Veryify args are doubles */
 	for (int i = 0; i < argc; ++i) {
 		if (!verify_number(argv[i])) {
@@ -142,6 +137,10 @@ seq_main(int argc, char *argv[])
 	};
 
 	switch (argc) {
+	/* missing range */
+	case 0:
+		fprintf(stderr, "missing range\n");
+		return EXIT_FAILURE;
 	/* end */
 	case 1:
 		rng.end = strtod(argv[0], NULL);
