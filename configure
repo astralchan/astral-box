@@ -23,6 +23,7 @@ utils="
  comm
  tee
  pwd
+ cd
 "
 
 usage() {
