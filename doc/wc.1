@@ -37,5 +37,28 @@ Print the number of bytes.
 .BR \-m
 Print the number of characters.
 
+.SH EXAMPLES
+
+.nf
+.B \-c (bytes) vs \-m (characters)
+$ echo "こんにちは、世界！" | wc \-c
+28
+$ echo "こんにちは、世界！" | wc \-m
+10
+
+.B Multiple files
+% file1.txt
+Hello, world!
+% file2.txt (empty)
+% file3.txt
+こんにちは、世界！
+
+$ wc file1.txt file2.txt file3.txt
+1 2 14 file1.txt
+0 0 0 file2.txt
+1 1 28 file3.txt
+2 3 42 total
+.fi
+
 .SH SEE ALSO
 .BR cksum (1)

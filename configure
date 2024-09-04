@@ -22,6 +22,7 @@ utils="
  cmp
  comm
  tee
+ pwd
 "
 
 usage() {
@@ -208,5 +209,7 @@ $(for util in $utils; do
 	printf "\t@rm -f \$(MANDIR)/man1/%s.1\n" "$util"
 done)
 _EOF
+
+echo "Run 'make' to build astral-box"
 
 exit 0

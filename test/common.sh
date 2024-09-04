@@ -20,7 +20,7 @@ clean_up() {
 	cd "$test_dir" || exit 1
 	for file in *; do
 		if [ "$(basename "$file")" != "check.sh" ]; then
-			rm "$file"
+			rm -r "$file"
 		fi
 	done
 }

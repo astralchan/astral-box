@@ -1,0 +1,99 @@
+.\" Copyright (C) astral
+.\" See COPYING for details.
+
+.TH SEQ 1
+
+.SH NAME
+seq \- print a sequence of numbers
+
+.SH SYNOPSIS
+.B seq
+[\fIoption\fR]... \fIlast\fR
+.br
+.B seq
+[\fIoption\fR]... \fIfirst\fR \fIlast\fR
+.br
+.B seq
+[\fIoption\fR]... \fIfirst\fR \fIincr\fR \fIlast\fR
+
+.SH DESCRIPTION
+.B seq
+will print a sequence of number to stdout.
+
+The number of arguments corresponds to properties about the generated sequence:
+
+.TP
+.B \fIlast\fR
+Generate numbers from 1 to \fIlast\fR, incrementing by 1.
+
+.TP
+.B \fIfirst\fR \fIlast\fR
+Generate numbers from \fIfirst\fR to \fIlast\fR, incrementing by 1.
+
+.TP
+.B \fIfirst\fR \fIincr\fR \fIlast\fR
+Generate numbers from \fIfirst\fR to \fIlast\fR, incrementing by \fIincr\fR.
+
+By default, the format is %g and the separator is <newline>.
+
+.SS OPTIONS
+
+Options \-f and \-w are mutually exclusive.
+
+.TP
+.B \-f \fIformat\fR
+Print each number with \fIformat\fR formatting.
+
+.TP
+.B \-s \fIseparator\fR
+Use \fIseparator\fR to separate numbers.
+
+.TP
+.B \-w
+Use padding zeros to equalize width of each number.
+
+.SH EXAMPLES
+
+.nf
+.B Argument number
+$ seq 5
+1
+2
+3
+4
+5
+$ seq 4 8
+4
+5
+6
+7
+8
+$ seq 8 2 14
+8
+10
+12
+14
+
+.B Format
+$ seq -f "%.1f" 3
+1.0
+2.0
+3.0
+
+.B Separator
+$ seq -s, 3
+1,2,3
+
+.B Padding
+$ seq -w 5 5 15
+05
+10
+15
+
+.B Notation
+$ seq -- -1e-1 1e-1 2e-1
+-0.1
+0
+0.1
+0.2
+.fi

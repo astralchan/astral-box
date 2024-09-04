@@ -82,7 +82,7 @@ From https://pubs.opengroup.org/onlinepubs/9699919799.2018edition/idx/utilities.
 - printf [WIP]
 - prs
 - ps
-- pwd
+- pwd [WIP]
 - qalter
 - qdel
 - qhold

@@ -1,0 +1,23 @@
+.\" Copyright (C) astral
+.\" See COPYING for details.
+
+.TH CAT 1
+
+.SH NAME
+cat \- concatenate files and print on the standard output
+
+.SH SYNOPSIS
+.B cat
+[\fIoption\fR]... [\fIfile\fR]...
+
+.SH DESCRIPTION
+.B cat
+will print the contents of stdin or the specified \fIfile\fR(s) to stdout.
+
+If no option is specified, \fBcat\fR will buffer the output.
+
+.SS OPTIONS
+
+.TP
+.B \-u
+Print bytes as they are read without buffering.
