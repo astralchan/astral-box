@@ -19,8 +19,12 @@ eval "test_dir=\${base_dir}/test/${cmdname}"
 clean_up() {
 	cd "$test_dir" || exit 1
 	for file in *; do
-		if [ "$(basename "$file")" != "check.sh" ]; then
+		if [ -d "$file" ]; then
 			rm -r "$file"
+			continue
+		fi
+		if [ "$(basename "$file")" != "check.sh" ]; then
+			rm "$file"
 		fi
 	done
 }
