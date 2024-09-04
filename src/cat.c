@@ -36,16 +36,8 @@ cat_buffer(FILE *fp)
 static void
 cat_bytes(FILE *fp)
 {
-	char *buf = NULL;
-	size_t len = 0;
-	ssize_t nread;
-
-	setbuf(stdout, NULL);
-
-	while ((nread = getline(&buf, &len, fp)) != -1)
-		fwrite(buf, nread, 1, stdout);
-
-	free(buf);
+	for (int c; (c = fgetc(fp)) != EOF;)
+		putchar(c);
 }
 
 int
