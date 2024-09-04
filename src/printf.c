@@ -41,6 +41,13 @@ printf_main(int argc, char *argv[])
 			continue;
 		}
 
+		/* Can't put in switch as it will check for index */
+		if (inFormat && *p == '%') {
+			putchar('%');
+			inFormat = false;
+			continue;
+		}
+
 		if (inEscape) {
 			switch (*p) {
 			case 'n':

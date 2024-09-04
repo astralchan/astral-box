@@ -8,3 +8,4 @@ check_value "Hello, world!" "$($cmd "Hello, world!")"
 
 echo "Checking $cmdname formats..."
 check_value "foo 42" "$($cmd "%s %d" "foo" "42")"
+check_value "%" "$($cmd "%%")"
