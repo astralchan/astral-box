@@ -25,6 +25,8 @@ dist: clean
 		doc \
 		test \
 		astral-box-$(VERSION)
+	rm -f astral-box-$(VERSION)/src/astal-box.c
+	rm -f astral-box-$(VERSION)/src/utils.h
 	pax -wf astral-box-$(VERSION).tar astral-box-$(VERSION)
 	rm -rf astral-box-$(VERSION)
 	gzip -k astral-box-$(VERSION).tar
