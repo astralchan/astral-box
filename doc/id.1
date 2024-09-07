@@ -1,0 +1,66 @@
+.\" Copyright (C) astral
+.\" See COPYING for details.
+
+.TH ID 1
+
+.SH NAME
+id \- print user identity
+
+.SH SYNOPSIS
+.B id
+[\fIuser\fR]
+.br
+.B id \-G
+[\fI\-n\fR]
+[\fIuser\fR]
+.br
+.B id \-g
+[\fI\-nr\fR]
+[\fIuser\fR]
+.br
+.B id \-u
+[\fI\-nr\fR]
+[\fIuser\fR]
+
+.SH DESCRIPTION
+.B id
+will print user information about \fIuser\fR to stdout.
+
+If no \fIuser\fR is specified, the current user is used.
+
+If no options are specified, the \fIuser\fR's user ID, group ID, and groups are
+printed.
+
+.SS OPTIONS
+
+.TP
+.B \-G
+Print all group IDs.
+
+.TP
+.B \-g
+Print the effective group ID.
+
+.TP
+.B \-u
+Print the user ID.
+
+.TP
+.B \-n
+Print names instead of numbers.
+
+.TP
+.B \-r
+Print the real ID instead of the effective ID.
+
+.SH EXAMPLES
+
+.nf
+.B get user name as string
+$ id -un
+.fi
+
+.nf
+.B get effective group as string
+$ id -gn
+.fi
