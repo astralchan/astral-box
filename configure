@@ -24,6 +24,7 @@ utils="
  tee
  pwd
  cd
+ id
 "
 
 usage() {
