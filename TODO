@@ -1,4 +1,5 @@
 From https://pubs.opengroup.org/onlinepubs/9699919799.2018edition/idx/utilities.html
+and useful other utilities
 
 - admin
 - alias
@@ -137,7 +138,7 @@ From https://pubs.opengroup.org/onlinepubs/9699919799.2018edition/idx/utilities.
 - wait
 - wc [COMPLETE]
 - what
-- who
+- who [WIP]
 - write
 - xargs
 - yes [WIP]

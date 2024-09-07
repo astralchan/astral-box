@@ -25,6 +25,7 @@ utils="
  pwd
  cd
  id
+ who
 "
 
 usage() {
