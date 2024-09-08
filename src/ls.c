@@ -435,6 +435,8 @@ ls_main(int argc, char *argv[])
 		if (argc > 1)
 			printf("%s:\n", argv[i]);
 		print_entry(argv[i], &opts, &ret);
+		if (argc > 1 && i < argc - 1)
+			putchar('\n');
 	}
 
 	return ret;
