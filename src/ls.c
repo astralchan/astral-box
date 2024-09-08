@@ -454,10 +454,13 @@ ls_main(int argc, char *argv[])
 		return ret;
 	}
 
+	int retTmp = EXIT_SUCCESS;
 	for (int i = 0; i < argc; ++i) {
 		if (argc > 1)
 			printf("%s:\n", argv[i]);
-		print_entry(argv[i], &opts, &ret);
+		print_entry(argv[i], &opts, &retTmp);
+		if (retTmp == EXIT_FAILURE)
+			ret = EXIT_FAILURE;
 		if (argc > 1 && i < argc - 1)
 			putchar('\n');
 	}
