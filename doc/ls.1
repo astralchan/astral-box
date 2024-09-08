@@ -1,0 +1,91 @@
+.\" Copyright (C) astral
+.\" See COPYING for details.
+
+.TH LS 1
+
+.SH NAME
+ls \- list directory contents
+
+.SH SYNOPSIS
+.B ls
+[\fIOPTION\fR]... [\fIFILE\fR]...
+
+.SH DESCRIPTION
+.B ls
+will print the contents of the specified \fIFILE\fR or the current directory.
+
+.SS OPTIONS
+
+.TP
+.B \-i
+print the inode number of each file.
+
+.TP
+.B \-k
+when specifying \-s, use 1024-byte blocks (default).
+
+.TP
+.B \-A
+list all files, but not \fI.\fR or \fI..\fR.
+
+.TP
+.B \-a
+list all files.
+
+.TP
+.B \-C
+list in columns.
+
+.TP
+.B \-m
+separate with commas.
+
+.TP
+.B \-1
+separate with newlines.
+
+.TP
+.B \-F
+append special symbol to special files.
+
+.nf
+@  link
+*  executable
+/  directory
+|  FIFO
+=  socket
+#  block device
+.fi
+
+.TP
+.B \-p
+append \fI/\fR to directories.
+
+.TP
+.B \-H
+follow links
+
+.TP
+.B \-L
+do not follow links
+
+.SH EXAMPLES
+
+.nf
+.B list content in columns
+$ ls -C
+.fi
+
+.nf
+.B List all files in $HOME, one per line
+$ ls -a1 $HOME
+.fi
+
+.nf
+.B list multiple files
+$ ls . $HOME
+.B .:
+.B ...
+.B $HOME:
+.B ...
+.fi

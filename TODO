@@ -64,7 +64,7 @@ and useful other utilities
 - logger
 - logname
 - lp
-- ls
+- ls [WIP]
 - mesg
 - mkdir
 - mkfifo
