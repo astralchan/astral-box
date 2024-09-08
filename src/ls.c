@@ -6,8 +6,8 @@
 /*
  * TODO
  * - long format (g, l, n, o)
- * - handle non-dir args properly
  * - print horizontal for -x
+ * - recursion with -R
  */
 
 #define _POSIX_C_SOURCE 200809L
@@ -89,13 +89,10 @@ print_entry(char *entry, struct options *opts, int *status)
 		}
 	}
 
-	/* TODO handle files properly */
-	if (!S_ISDIR(st.st_mode)) {
-		puts(entry);
-		return;
-	}
-
 	DIR *dir;
+	struct dirent **namelist;
+	char path[PATH_MAX];
+	int entries;
 	if (S_ISDIR(st.st_mode)) {
 		dir = opendir(entry);
 		if (dir == NULL) {
@@ -103,11 +100,37 @@ print_entry(char *entry, struct options *opts, int *status)
 			*status = EXIT_FAILURE;
 			return;
 		}
+
+		entries = scandir(entry, &namelist, NULL, alphasort);
+	} else { /* File */
+		entries = 1;
+		if (opts->i)
+			printf("%lu ", st.st_ino);
+
+		if (opts->s)
+			printf("%lu ", st.st_blocks);
+
+		fputs(entry, stdout);
+
+		if (opts->F) {
+			if (S_ISDIR(st.st_mode))
+				puts("/");
+			if (S_ISLNK(st.st_mode))
+				puts("@");
+			if (S_ISREG(st.st_mode) &&
+			    st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))
+				puts("*");
+			if (S_ISFIFO(st.st_mode))
+				puts("|");
+			if (S_ISSOCK(st.st_mode))
+				puts("=");
+			if (S_ISCHR(st.st_mode) || S_ISBLK(st.st_mode))
+				puts("#");
+		}
+
+		return;
 	}
 
-	char path[PATH_MAX];
-	struct dirent **namelist;
-	int entries = scandir(entry, &namelist, NULL, alphasort);
 	if (entries == -1) {
 		fprintf(stderr, "scandir: %s: %s\n", entry, strerror(errno));
 		*status = EXIT_FAILURE;
