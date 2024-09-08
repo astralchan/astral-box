@@ -8,6 +8,8 @@
 #include "utils.h"
 
 #include <ctype.h>
+#include <errno.h>
+#include <limits.h>
 #include <locale.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -27,49 +29,25 @@ struct options {
 struct counts {
 	size_t lines;
 	size_t words;
+	size_t bytes;
 	size_t chars;
 };
 
-static struct counts count_char(FILE *fp);
-static struct counts count_wchar(FILE *fp);
+static struct counts get_counts(FILE *fp);
 static void print_counts(struct counts *cnts, struct options *opts, char *name);
 
 static struct counts
-count_char(FILE *fp)
+get_counts(FILE *fp)
 {
 	struct counts ret = {
 		.lines = 0,
 		.words = 0,
+		.bytes = 0,
 		.chars = 0,
 	};
 
-	bool inWord, inSpace;
-	inWord = inSpace = false;
-	for (int c; (c = fgetc(fp)) != EOF; ++ret.chars) {
-		inSpace = isspace(c);
-
-		if (inSpace && inWord) {
-			inWord = false;
-			++ret.words;
-		}
-		if (!inSpace && !inWord)
-			inWord = true;
-
-		if (c == '\n')
-			++ret.lines;
-	}
-
-	return ret;
-}
-
-static struct counts
-count_wchar(FILE *fp)
-{
-	struct counts ret = {
-		.lines = 0,
-		.words = 0,
-		.chars = 0,
-	};
+	char buf[MB_LEN_MAX];
+	size_t bufLen = 0;
 
 	bool inWord, inSpace;
 	inWord = inSpace = false;
@@ -85,6 +63,10 @@ count_wchar(FILE *fp)
 
 		if (wc == L'\n')
 			++ret.lines;
+
+		/* Count bytes from characters */
+		bufLen = wcrtomb(buf, wc, NULL);
+		ret.bytes += (bufLen == (size_t)-1) ? 0 : bufLen;
 	}
 
 	return ret;
@@ -98,7 +80,7 @@ print_counts(struct counts *cnts, struct options *opts, char *name)
 	if (opts->w)
 		printf("%zu ", cnts->words);
 	if (opts->c)
-		printf("%zu ", cnts->chars);
+		printf("%zu ", cnts->bytes);
 	if (opts->m)
 		printf("%zu ", cnts->chars);
 	puts(name);
@@ -142,23 +124,20 @@ wc_main(int argc, char *argv[])
 	if (!opts.l && !opts.w && !opts.c && !opts.m)
 		opts.l = opts.w = opts.c = true;
 
-	/* -c and -m are mutually exclusive */
-	if (opts.c && opts.m)
-		opts.m = false;
-
 	argc -= optind;
 	argv += optind;
 
 	struct counts total = {
 		.lines = 0,
 		.words = 0,
+		.bytes = 0,
 		.chars = 0,
 	};
 
 	struct counts cnts;
 
 	if (argc < 1) {
-		cnts = (opts.m) ? count_wchar(stdin) : count_char(stdin);
+		cnts = get_counts(stdin);
 		print_counts(&cnts, &opts, "-");
 		return EXIT_SUCCESS;
 	}
@@ -180,11 +159,12 @@ wc_main(int argc, char *argv[])
 		if (useStdin)
 			fp = stdin;
 
-		cnts = (opts.m) ? count_wchar(fp) : count_char(fp);
+		cnts = get_counts(fp);
 		print_counts(&cnts, &opts, argv[i]);
 
 		total.lines += cnts.lines;
 		total.words += cnts.words;
+		total.bytes += cnts.bytes;
 		total.chars += cnts.chars;
 
 		if (!useStdin)
