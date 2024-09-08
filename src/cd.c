@@ -29,9 +29,11 @@ cd_main(int argc, char *argv[])
 		switch (opt) {
 		case 'L':
 			opts.L = true;
+			opts.P = false;
 			break;
 		case 'P':
 			opts.P = true;
+			opts.L = false;
 			break;
 		case '?':
 			fprintf(stderr, "unknown option: -%c\n", optopt);
@@ -45,8 +47,10 @@ cd_main(int argc, char *argv[])
 	if (!opts.L && !opts.P)
 		opts.L = true;
 
-	if (opts.L && opts.P)
-		opts.L = false;
+	if (argc < 1 && getenv("HOME") == NULL) {
+		fprintf(stderr, "HOME not set\n");
+		return EXIT_FAILURE;
+	}
 
 	return EXIT_SUCCESS;
 }

@@ -27,6 +27,7 @@ utils="
  id
  who
  ls
+ nohup
 "
 
 usage() {
