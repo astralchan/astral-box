@@ -147,10 +147,10 @@ print_entry(char *entry, struct options *opts, int *status)
 		int len = (int)strlen(namelist[j]->d_name);
 
 		if (opts->s)
-			len += (int)log10(st.st_blocks) + 1;
+			len += (int)log10(st.st_blocks) + 2;
 
 		if (opts->i)
-			len += (int)log10(st.st_ino) + 1;
+			len += (int)log10(st.st_ino) + 2;
 
 		if (opts->p && S_ISDIR(st.st_mode))
 			++len;
