@@ -2,6 +2,8 @@
 
 Implementation of POSIX utilities linked to one binary.
 
+The status of each utility is in TODO.
+
 ## Build
 
 For build instructions, see INSTALL.
