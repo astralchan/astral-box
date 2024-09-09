@@ -5,9 +5,10 @@
 
 /*
  * TODO
- * - long format (g, l, n, o)
- * - print horizontal for -x
- * - recursion with -R
+ * - print horizontal (x)
+ * - recursion (R)
+ * - time stuff (c, u)
+ * - sorting (S, f, t)
  */
 
 #define _POSIX_C_SOURCE 200809L
@@ -18,8 +19,10 @@
 
 #include <dirent.h>
 #include <errno.h>
+#include <grp.h>
 #include <limits.h>
 #include <math.h>
+#include <pwd.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -93,7 +96,7 @@ print_entry(char *entry, struct options *opts, int *status)
 	struct dirent **namelist;
 	char path[PATH_MAX];
 	int entries;
-	if (S_ISDIR(st.st_mode)) {
+	if (S_ISDIR(st.st_mode) && !opts->d) {
 		dir = opendir(entry);
 		if (dir == NULL) {
 			fprintf(stderr, "opendir: %s: %s\n", entry, strerror(errno));
@@ -128,6 +131,7 @@ print_entry(char *entry, struct options *opts, int *status)
 				puts("#");
 		}
 
+		putchar('\n');
 		return;
 	}
 
@@ -241,10 +245,80 @@ print_entry(char *entry, struct options *opts, int *status)
 
 		/* Print entry */
 
-		if (opts->C || opts->x)
+		if (opts->C || opts->x) {
+			/* Column format */
+
 			printf("%-*s", colWidth, name);
-		else
-			printf("%s", name);
+		} else if (opts->g || opts->l || opts->n || opts->o) {
+			/* Long format */
+
+			/* Permissions */
+
+			/* File type */
+			putchar((S_ISDIR(st.st_mode)) ? 'd' :
+			        (S_ISLNK(st.st_mode)) ? 'l' :
+			        (S_ISREG(st.st_mode)) ? '-' :
+			        (S_ISBLK(st.st_mode)) ? 'b' :
+			        (S_ISCHR(st.st_mode)) ? 'c' :
+			        (S_ISFIFO(st.st_mode)) ? 'p' :
+			        (S_ISSOCK(st.st_mode)) ? 's' : '?');
+
+			putchar((st.st_mode & S_IRUSR) ? 'r' : '-');
+			putchar((st.st_mode & S_IWUSR) ? 'w' : '-');
+			putchar((st.st_mode & S_IXUSR) ? 'x' :
+			        (st.st_mode & S_ISUID) ? 'S' : '-');
+
+			putchar((st.st_mode & S_IRGRP) ? 'r' : '-');
+			putchar((st.st_mode & S_IWGRP) ? 'w' : '-');
+			putchar((st.st_mode & S_IXGRP) ? 'x' :
+			        (st.st_mode & S_ISGID) ? 'S' : '-');
+
+			putchar((st.st_mode & S_IROTH) ? 'r' : '-');
+			putchar((st.st_mode & S_IWOTH) ? 'w' : '-');
+			putchar((st.st_mode & S_IXOTH) ? 'x' : '-');
+
+			putchar(' ');
+
+			if (!opts->g) {
+				if (opts->n)
+					printf("%u ", st.st_uid);
+				else
+					printf("%s ", getpwuid(st.st_uid)->pw_name);
+			}
+
+			if (!opts->o) {
+				if (opts->n)
+					printf("%u ", st.st_gid);
+				else
+					printf("%s ", getgrgid(st.st_gid)->gr_name);
+			}
+
+			/* Print last access time */
+			struct tm *tm = localtime(&st.st_atime);
+			if (opts->c)
+				tm = localtime(&st.st_ctime);
+			char time[128];
+			strftime(time, sizeof(time), "%b %d %H:%M", tm);
+			fputs(time, stdout);
+			putchar(' ');
+
+			/* Link arrow */
+			if (!opts->L && S_ISLNK(st.st_mode)) {
+				if (readlink(path, nameTmp, sizeof(nameTmp)) == -1) {
+					fprintf(stderr, "readlink: %s: %s\n", path, strerror(errno));
+					*status = EXIT_FAILURE;
+					return;
+				}
+
+				sprintf(name, "%s -> %s", name, nameTmp);
+			}
+
+			fputs(name, stdout);
+		} else {
+			/* One entry per line */
+
+			fputs(name, stdout);
+		}
 
 		if (opts->C || opts->x) {
 			/* Print new row */
