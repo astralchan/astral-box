@@ -112,22 +112,98 @@ print_entry(char *entry, struct options *opts, int *status)
 		if (opts->s)
 			printf("%lu ", st.st_blocks);
 
-		fputs(entry, stdout);
-
 		if (opts->F) {
 			if (S_ISDIR(st.st_mode))
-				puts("/");
+				strcat(entry, "/");
 			if (S_ISLNK(st.st_mode))
-				puts("@");
+				strcat(entry, "@");
 			if (S_ISREG(st.st_mode) &&
 			    st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))
-				puts("*");
+				strcat(entry, "*");
 			if (S_ISFIFO(st.st_mode))
-				puts("|");
+				strcat(entry, "|");
 			if (S_ISSOCK(st.st_mode))
-				puts("=");
+				strcat(entry, "=");
 			if (S_ISCHR(st.st_mode) || S_ISBLK(st.st_mode))
-				puts("#");
+				strcat(entry, "#");
+		}
+
+		/* Long format */
+		
+		if (opts->g || opts->l || opts->n || opts->o) {
+			/* Permissions */
+
+			/* File type */
+			putchar((S_ISDIR(st.st_mode)) ? 'd' :
+			        (S_ISLNK(st.st_mode)) ? 'l' :
+			        (S_ISREG(st.st_mode)) ? '-' :
+			        (S_ISBLK(st.st_mode)) ? 'b' :
+			        (S_ISCHR(st.st_mode)) ? 'c' :
+			        (S_ISFIFO(st.st_mode)) ? 'p' :
+			        (S_ISSOCK(st.st_mode)) ? 's' : '?');
+
+			putchar((st.st_mode & S_IRUSR) ? 'r' : '-');
+			putchar((st.st_mode & S_IWUSR) ? 'w' : '-');
+			putchar((st.st_mode & S_IXUSR) ? 'x' :
+			        (st.st_mode & S_ISUID) ? 'S' : '-');
+
+			putchar((st.st_mode & S_IRGRP) ? 'r' : '-');
+			putchar((st.st_mode & S_IWGRP) ? 'w' : '-');
+			putchar((st.st_mode & S_IXGRP) ? 'x' :
+			        (st.st_mode & S_ISGID) ? 'S' : '-');
+
+			putchar((st.st_mode & S_IROTH) ? 'r' : '-');
+			putchar((st.st_mode & S_IWOTH) ? 'w' : '-');
+			putchar((st.st_mode & S_IXOTH) ? 'x' : '-');
+
+			putchar(' ');
+
+			/* Number of links */
+			printf("%4lu ", st.st_nlink);
+
+			if (!opts->g) {
+				if (opts->n)
+					printf("%u ", st.st_uid);
+				else
+					printf("%s ", getpwuid(st.st_uid)->pw_name);
+			}
+
+			if (!opts->o) {
+				if (opts->n)
+					printf("%u ", st.st_gid);
+				else
+					printf("%s ", getgrgid(st.st_gid)->gr_name);
+			}
+
+			/* Size or device info */
+			if (S_ISCHR(st.st_mode) || S_ISBLK(st.st_mode))
+				printf("%*lu ", 8, st.st_dev);
+			else
+				printf("%*lu ", 8, st.st_size);
+
+			/* Print last access time */
+			struct tm *tm = localtime(&st.st_atime);
+			if (opts->c)
+				tm = localtime(&st.st_ctime);
+			if (opts->u)
+				tm = localtime(&st.st_atime);
+			char time[128];
+			strftime(time, sizeof(time), "%b %d %H:%M", tm);
+			fputs(time, stdout);
+			putchar(' ');
+
+			/* Link arrow */
+			if (!opts->L && S_ISLNK(st.st_mode)) {
+				if (readlink(entry, path, sizeof(path)) == -1) {
+					fprintf(stderr, "readlink: %s: %s\n", entry, strerror(errno));
+					*status = EXIT_FAILURE;
+					return;
+				}
+
+				printf("%s -> %s", entry, path);
+			}
+
+			fputs(entry, stdout);
 		}
 
 		putchar('\n');
