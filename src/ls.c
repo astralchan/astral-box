@@ -6,7 +6,6 @@
 /*
  * TODO
  * - recursion (R)
- * - time stuff (c, u)
  * - sorting (S, f, t)
  */
 
@@ -95,6 +94,7 @@ print_entry(char *entry, struct options *opts, int *status)
 	struct dirent **namelist;
 	char path[PATH_MAX];
 	int entries;
+	size_t blockTotal = 0;
 	if (S_ISDIR(st.st_mode) && !opts->d) {
 		dir = opendir(entry);
 		if (dir == NULL) {
@@ -140,13 +140,17 @@ print_entry(char *entry, struct options *opts, int *status)
 		return;
 	}
 
-	/* Get largest entry name */
+	/* Get largest entry name and total block size */
 	int colWidth = 0;
 	for (int j = 0; j < entries; ++j) {
 		int len = (int)strlen(namelist[j]->d_name);
 
+		blockTotal += (opts->k) ? st.st_blocks * 2 : st.st_blocks;
+
 		if (opts->s)
-			len += (int)log10(st.st_blocks) + 2;
+			len += (opts->k) ?
+			    (int)log10(st.st_blocks * 2) + 2 :
+			    (int)log10(st.st_blocks) + 2;
 
 		if (opts->i)
 			len += (int)log10(st.st_ino) + 2;
@@ -175,6 +179,11 @@ print_entry(char *entry, struct options *opts, int *status)
 	}
 
 	colWidth += 2;
+
+	/* Print total block size */
+	if (opts->g || opts->l || opts->n || opts->o) {
+		printf("total %lu\n", blockTotal);
+	}
 
 	char name[PATH_MAX], nameTmp[PATH_MAX], colorName[PATH_MAX];
 	for (int i = 0; i < entries; ++i) {
@@ -233,7 +242,9 @@ print_entry(char *entry, struct options *opts, int *status)
 		strcpy(nameTmp, name);
 
 		if (opts->s) {
-			sprintf(name, "%lu %s", st.st_blocks, nameTmp);
+			sprintf(name, "%lu %s",
+			    (opts->k) ? st.st_blocks * 2 : st.st_blocks,
+			    nameTmp);
 			strcpy(nameTmp, name);
 		}
 
