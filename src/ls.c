@@ -5,7 +5,6 @@
 
 /*
  * TODO
- * - print horizontal (x)
  * - recursion (R)
  * - time stuff (c, u)
  * - sorting (S, f, t)
@@ -279,6 +278,9 @@ print_entry(char *entry, struct options *opts, int *status)
 
 			putchar(' ');
 
+			/* Number of links */
+			printf("%4lu ", st.st_nlink);
+
 			if (!opts->g) {
 				if (opts->n)
 					printf("%u ", st.st_uid);
@@ -293,10 +295,18 @@ print_entry(char *entry, struct options *opts, int *status)
 					printf("%s ", getgrgid(st.st_gid)->gr_name);
 			}
 
+			/* Size or device info */
+			if (S_ISCHR(st.st_mode) || S_ISBLK(st.st_mode))
+				printf("%*lu ", 8, st.st_dev);
+			else
+				printf("%*lu ", 8, st.st_size);
+
 			/* Print last access time */
 			struct tm *tm = localtime(&st.st_atime);
 			if (opts->c)
 				tm = localtime(&st.st_ctime);
+			if (opts->u)
+				tm = localtime(&st.st_atime);
 			char time[128];
 			strftime(time, sizeof(time), "%b %d %H:%M", tm);
 			fputs(time, stdout);
