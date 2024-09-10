@@ -138,7 +138,7 @@ wc_main(int argc, char *argv[])
 
 	if (argc < 1) {
 		cnts = get_counts(stdin);
-		print_counts(&cnts, &opts, "-");
+		print_counts(&cnts, &opts, "");
 		return EXIT_SUCCESS;
 	}
 
