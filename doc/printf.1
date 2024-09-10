@@ -1,0 +1,55 @@
+.\" Copyright (C) astral
+.\" See COPYING for details.
+
+.TH PRINTF 1
+
+.SH NAME
+printf \- print a formatted string
+
+.SH SYNOPSIS
+.B printf
+<\fIFORMAT\fR> <\fIARG\fR>...
+
+.SH DESCRIPTION
+.B printf
+will print \fIFORMAT\fR with specified \fIARG\fR(s) to STDOUT.
+
+.SS FORMAT
+
+An insertion for a formatted string is specified by a percent sign (\fI%\fR)
+followed by an identifier. The following identifiers are supported:
+
+.TP
+.B %s
+String
+
+.TP
+.B %d
+Integer
+
+.TP
+.B %c
+Character
+
+.TP
+.B %l*
+Long specifier for *
+
+.SH EXAMPLES
+
+.nf
+.B No insertions
+$ printf "Hello, world\\n"
+Hello, world
+
+.B String insertion
+$ printf "%s, %s\\n" "Hello" "world"
+Hello, world
+
+.B Percentage sign
+$ printf "%d%%\\n" 100
+100%
+.fi
+
+.SH SEE ALSO
+.BR echo (1)

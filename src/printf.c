@@ -87,6 +87,9 @@ printf_main(int argc, char *argv[])
 			case 'd':
 				printf("%d", atoi(argv[index++]));
 				break;
+			case 'c':
+				printf("%c", *argv[index++]);
+				break;
 			case 'l':
 				switch (*++p) {
 				case 'd':
