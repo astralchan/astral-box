@@ -42,9 +42,8 @@ get_sum(FILE *fp)
 	};
 
 	uint8_t buf[BUFSIZE];
-	size_t nread;
-	while ((nread = fread(buf, 1, BUFSIZE, fp)) > 0) {
-		ret.bytes += nread;
+	for (size_t n; (n = fread(buf, 1, BUFSIZE, fp)) > 0; ) {
+		ret.bytes += n;
 	}
 
 	return ret;
