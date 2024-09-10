@@ -21,3 +21,32 @@ If no option is specified, \fBcat\fR will buffer the output.
 .TP
 .B \-u
 Print bytes as they are read without buffering.
+
+.SH EXAMPLES
+
+.nf
+.B cat files
+% file1.txt
+Hello, world!
+% file2.txt (empty)
+% file3.txt
+こんにちは、世界！
+
+$ cat file1.txt file2.txt file3.txt
+Hello, world!
+こんにちは、世界！
+
+.B bytes from stdin
+$ cat -u
+Hello, world!
+Hello, world!
+
+.B here documents
+$ cat > foo.txt << _EOF
+> Hello, world!
+> こんにちは、世界！
+> _EOF
+$ cat foo.txt
+Hello, world!
+こんにちは、世界！
+.fi
