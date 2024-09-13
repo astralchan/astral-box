@@ -42,35 +42,95 @@
 #define COLOR_WHITE   "\033[37m"
 
 struct options {
+	/* General */
 	bool i;
 	bool k;
 	bool q;
 	bool r;
 	bool s;
+	/* Long */
 	bool g;
 	bool l;
 	bool n;
 	bool o;
+	/* Hidden */
 	bool A;
 	bool a;
+	/* Column */
 	bool C;
 	bool m;
 	bool x;
 	bool _1;
+	/* Append chars */
 	bool F;
 	bool p;
+	/* Follow symlinks */
 	bool H;
 	bool L;
+	/* Recursion / file */
 	bool R;
 	bool d;
+	/* Sorting */
 	bool S;
 	bool f;
 	bool t;
+	/* Time */
 	bool c;
 	bool u;
 };
 
+static void print_permissions(struct stat *st);
+static void append_char(char *path, struct stat *st, struct options *opts);
 static void print_entry(char *entry, struct options *opts, int *status);
+
+static void
+print_permissions(struct stat *st)
+{
+	putchar((S_ISDIR(st->st_mode)) ? 'd' :
+	    (S_ISLNK(st->st_mode)) ? 'l' :
+	    (S_ISREG(st->st_mode)) ? '-' :
+	    (S_ISBLK(st->st_mode)) ? 'b' :
+	    (S_ISCHR(st->st_mode)) ? 'c' :
+	    (S_ISFIFO(st->st_mode)) ? 'p' :
+	    (S_ISSOCK(st->st_mode)) ? 's' : '?');
+
+	putchar((st->st_mode & S_IRUSR) ? 'r' : '-');
+	putchar((st->st_mode & S_IWUSR) ? 'w' : '-');
+	putchar((st->st_mode & S_IXUSR) ? 'x' :
+	        (st->st_mode & S_ISUID) ? 'S' : '-');
+
+	putchar((st->st_mode & S_IRGRP) ? 'r' : '-');
+	putchar((st->st_mode & S_IWGRP) ? 'w' : '-');
+	putchar((st->st_mode & S_IXGRP) ? 'x' :
+	        (st->st_mode & S_ISGID) ? 'S' : '-');
+
+	putchar((st->st_mode & S_IROTH) ? 'r' : '-');
+	putchar((st->st_mode & S_IWOTH) ? 'w' : '-');
+	putchar((st->st_mode & S_IXOTH) ? 'x' : '-');
+}
+
+static void
+append_char(char *path, struct stat *st, struct options *opts)
+{
+	if (opts->p && S_ISDIR(st->st_mode))
+		strcat(path, "/");
+
+	if (opts->F) {
+		if (S_ISDIR(st->st_mode))
+			strcat(path, "/");
+		if (S_ISLNK(st->st_mode))
+			strcat(path, "@");
+		if (S_ISREG(st->st_mode) &&
+		    st->st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))
+			strcat(path, "*");
+		if (S_ISFIFO(st->st_mode))
+			strcat(path, "|");
+		if (S_ISSOCK(st->st_mode))
+			strcat(path, "=");
+		if (S_ISCHR(st->st_mode) || S_ISBLK(st->st_mode))
+			strcat(path, "#");
+	}
+}
 
 static void
 print_entry(char *entry, struct options *opts, int *status)
@@ -112,21 +172,7 @@ print_entry(char *entry, struct options *opts, int *status)
 		if (opts->s)
 			printf("%lu ", st.st_blocks);
 
-		if (opts->F) {
-			if (S_ISDIR(st.st_mode))
-				strcat(entry, "/");
-			if (S_ISLNK(st.st_mode))
-				strcat(entry, "@");
-			if (S_ISREG(st.st_mode) &&
-			    st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))
-				strcat(entry, "*");
-			if (S_ISFIFO(st.st_mode))
-				strcat(entry, "|");
-			if (S_ISSOCK(st.st_mode))
-				strcat(entry, "=");
-			if (S_ISCHR(st.st_mode) || S_ISBLK(st.st_mode))
-				strcat(entry, "#");
-		}
+		append_char(entry, &st, opts);
 
 		/* Long format */
 		
@@ -134,27 +180,7 @@ print_entry(char *entry, struct options *opts, int *status)
 			/* Permissions */
 
 			/* File type */
-			putchar((S_ISDIR(st.st_mode)) ? 'd' :
-			        (S_ISLNK(st.st_mode)) ? 'l' :
-			        (S_ISREG(st.st_mode)) ? '-' :
-			        (S_ISBLK(st.st_mode)) ? 'b' :
-			        (S_ISCHR(st.st_mode)) ? 'c' :
-			        (S_ISFIFO(st.st_mode)) ? 'p' :
-			        (S_ISSOCK(st.st_mode)) ? 's' : '?');
-
-			putchar((st.st_mode & S_IRUSR) ? 'r' : '-');
-			putchar((st.st_mode & S_IWUSR) ? 'w' : '-');
-			putchar((st.st_mode & S_IXUSR) ? 'x' :
-			        (st.st_mode & S_ISUID) ? 'S' : '-');
-
-			putchar((st.st_mode & S_IRGRP) ? 'r' : '-');
-			putchar((st.st_mode & S_IWGRP) ? 'w' : '-');
-			putchar((st.st_mode & S_IXGRP) ? 'x' :
-			        (st.st_mode & S_ISGID) ? 'S' : '-');
-
-			putchar((st.st_mode & S_IROTH) ? 'r' : '-');
-			putchar((st.st_mode & S_IWOTH) ? 'w' : '-');
-			putchar((st.st_mode & S_IXOTH) ? 'x' : '-');
+			print_permissions(&st);
 
 			putchar(' ');
 
@@ -295,25 +321,7 @@ print_entry(char *entry, struct options *opts, int *status)
 		strcpy(nameTmp, name);
 
 		/* Append chars */
-
-		if (opts->p && S_ISDIR(st.st_mode))
-			strcat(name, "/");
-
-		if (opts->F) {
-			if (S_ISDIR(st.st_mode))
-				strcat(name, "/");
-			if (S_ISLNK(st.st_mode))
-				strcat(name, "@");
-			if (S_ISREG(st.st_mode) &&
-			    st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))
-				strcat(name, "*");
-			if (S_ISFIFO(st.st_mode))
-				strcat(name, "|");
-			if (S_ISSOCK(st.st_mode))
-				strcat(name, "=");
-			if (S_ISCHR(st.st_mode) || S_ISBLK(st.st_mode))
-				strcat(name, "#");
-		}
+		append_char(name, &st, opts);
 
 		strcpy(nameTmp, name);
 
@@ -341,27 +349,7 @@ print_entry(char *entry, struct options *opts, int *status)
 			/* Permissions */
 
 			/* File type */
-			putchar((S_ISDIR(st.st_mode)) ? 'd' :
-			        (S_ISLNK(st.st_mode)) ? 'l' :
-			        (S_ISREG(st.st_mode)) ? '-' :
-			        (S_ISBLK(st.st_mode)) ? 'b' :
-			        (S_ISCHR(st.st_mode)) ? 'c' :
-			        (S_ISFIFO(st.st_mode)) ? 'p' :
-			        (S_ISSOCK(st.st_mode)) ? 's' : '?');
-
-			putchar((st.st_mode & S_IRUSR) ? 'r' : '-');
-			putchar((st.st_mode & S_IWUSR) ? 'w' : '-');
-			putchar((st.st_mode & S_IXUSR) ? 'x' :
-			        (st.st_mode & S_ISUID) ? 'S' : '-');
-
-			putchar((st.st_mode & S_IRGRP) ? 'r' : '-');
-			putchar((st.st_mode & S_IWGRP) ? 'w' : '-');
-			putchar((st.st_mode & S_IXGRP) ? 'x' :
-			        (st.st_mode & S_ISGID) ? 'S' : '-');
-
-			putchar((st.st_mode & S_IROTH) ? 'r' : '-');
-			putchar((st.st_mode & S_IWOTH) ? 'w' : '-');
-			putchar((st.st_mode & S_IXOTH) ? 'x' : '-');
+			print_permissions(&st);
 
 			putchar(' ');
 
