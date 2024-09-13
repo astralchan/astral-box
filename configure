@@ -29,6 +29,8 @@ utils="
  ls
  nohup
  expand
+ head
+ tail
 "
 
 usage() {

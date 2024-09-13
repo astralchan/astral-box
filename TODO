@@ -49,7 +49,7 @@ and useful other utilities
 - getopts
 - grep
 - hash
-- head
+- head [WIP]
 - iconv
 - id [COMPLETE]
 - ipcrm
@@ -109,7 +109,7 @@ and useful other utilities
 - strip
 - stty
 - tabs
-- tail
+- tail [WIP]
 - talk
 - tee [WIP]
 - test
