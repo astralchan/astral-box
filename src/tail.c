@@ -22,6 +22,7 @@ struct options {
 };
 
 static bool verify_number(char *num);
+static long get_number(char *num);
 
 static bool
 verify_number(char *num)
@@ -36,6 +37,12 @@ verify_number(char *num)
 	}
 
 	return true;
+}
+
+static long
+get_number(char *num)
+{
+	return atol(num);
 }
 
 int
