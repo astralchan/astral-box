@@ -32,6 +32,7 @@ utils="
  head
  tail
  cal
+ time
 "
 
 usage() {

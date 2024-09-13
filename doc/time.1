@@ -1,0 +1,37 @@
+.\" Copyright (C) astral
+.\" See COPYING for details.
+
+.TH TIME 1
+
+.SH NAME
+time \- time a command
+
+.SH SYNOPSIS
+.B time
+[\fIOPTION\fR] \fICOMMAND\fR [\fIARGUMENTS\fR]
+
+.SH DESCRIPTION
+.B time
+will run the specified \fICOMMAND\fR with the specified \fIARGUMENTS\fR and
+print the time it took to run to stderr.
+
+.SS OPTIONS
+
+.TP
+.B \-p
+Output time in following format:
+.nf
+real %f
+user %f
+sys %f
+.fi
+
+.SH EXAMPLES
+
+.nf
+.B time command with expected time
+$ time -p sleep 3
+real 3.00
+user 0.00
+sys 0.00
+.fi
