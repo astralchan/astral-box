@@ -33,6 +33,7 @@ utils="
  tail
  cal
  time
+ sleep
 "
 
 usage() {

@@ -1,0 +1,27 @@
+.\" Copyright (C) astral
+.\" See COPYING for details.
+
+.TH SLEEP 1
+
+.SH NAME
+sleep \- stop execution for a specified amount of time
+
+.SH SYNOPSIS
+.B sleep
+<\fItime\fR>
+
+.SH DESCRIPTION
+.B sleep
+will stop execution for the specified \fItime\fR in seconds.
+
+.SH EXAMPLES
+.nf
+.B In a loop
+
+#!/bin/sh
+
+for i in 1 2 3 4 5; do
+	printf "Processing %d...\n" "$i"
+	sleep 1
+done
+.fi

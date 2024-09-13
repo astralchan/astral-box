@@ -102,7 +102,7 @@ and useful other utilities
 - rmdir
 - sed
 - seq [COMPLETE]
-- sleep
+- sleep [WIP]
 - sort
 - split
 - strings
