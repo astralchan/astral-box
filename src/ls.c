@@ -80,6 +80,7 @@ struct options {
 };
 
 static void print_permissions(struct stat *st);
+static void print_time(struct stat *st, struct options *opts);
 static void append_char(char *path, struct stat *st, struct options *opts);
 static void print_entry(char *entry, struct options *opts, int *status);
 
@@ -107,6 +108,22 @@ print_permissions(struct stat *st)
 	putchar((st->st_mode & S_IROTH) ? 'r' : '-');
 	putchar((st->st_mode & S_IWOTH) ? 'w' : '-');
 	putchar((st->st_mode & S_IXOTH) ? 'x' : '-');
+}
+
+static void
+print_time(struct stat *st, struct options *opts)
+{
+	struct tm *tm;
+
+	tm = localtime(
+	    (opts->c) ? &st->st_ctime :
+	    (opts->u) ? &st->st_atime :
+	    &st->st_mtime
+	);
+
+	char time[128];
+	strftime(time, sizeof(time), "%b %d %H:%M", tm);
+	fputs(time, stdout);
 }
 
 static void
@@ -208,14 +225,7 @@ print_entry(char *entry, struct options *opts, int *status)
 				printf("%*lu ", 8, st.st_size);
 
 			/* Print last access time */
-			struct tm *tm = localtime(&st.st_atime);
-			if (opts->c)
-				tm = localtime(&st.st_ctime);
-			if (opts->u)
-				tm = localtime(&st.st_atime);
-			char time[128];
-			strftime(time, sizeof(time), "%b %d %H:%M", tm);
-			fputs(time, stdout);
+			print_time(&st, opts);
 			putchar(' ');
 
 			/* Link arrow */
@@ -377,14 +387,7 @@ print_entry(char *entry, struct options *opts, int *status)
 				printf("%*lu ", 8, st.st_size);
 
 			/* Print last access time */
-			struct tm *tm = localtime(&st.st_atime);
-			if (opts->c)
-				tm = localtime(&st.st_ctime);
-			if (opts->u)
-				tm = localtime(&st.st_atime);
-			char time[128];
-			strftime(time, sizeof(time), "%b %d %H:%M", tm);
-			fputs(time, stdout);
+			print_time(&st, opts);
 			putchar(' ');
 
 			/* Link arrow */
