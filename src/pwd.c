@@ -14,10 +14,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#ifndef PATH_MAX
-#define PATH_MAX 4096
-#endif
-
 struct options {
 	bool L;
 	bool P;
