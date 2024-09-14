@@ -11,6 +11,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <locale.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,8 +34,15 @@ struct counts {
 	size_t chars;
 };
 
+struct align {
+	int lines;
+	int words;
+	int bytes;
+	int chars;
+};
+
 static struct counts get_counts(FILE *fp);
-static void print_counts(struct counts *cnts, struct options *opts, char *name);
+static void print_counts(struct counts *cnts, struct options *opts, char *name, struct align *max);
 
 static struct counts
 get_counts(FILE *fp)
@@ -73,16 +81,16 @@ get_counts(FILE *fp)
 }
 
 static void
-print_counts(struct counts *cnts, struct options *opts, char *name)
+print_counts(struct counts *cnts, struct options *opts, char *name, struct align *max)
 {
 	if (opts->l)
-		printf("%zu ", cnts->lines);
+		printf("%*zu ", max->lines, cnts->lines);
 	if (opts->w)
-		printf("%zu ", cnts->words);
+		printf("%*zu ", max->words, cnts->words);
 	if (opts->c)
-		printf("%zu ", cnts->bytes);
+		printf("%*zu ", max->bytes, cnts->bytes);
 	if (opts->m)
-		printf("%zu ", cnts->chars);
+		printf("%*zu ", max->chars, cnts->chars);
 	puts(name);
 }
 
@@ -136,14 +144,18 @@ wc_main(int argc, char *argv[])
 
 	struct counts cnts;
 
-	if (argc < 1) {
-		cnts = get_counts(stdin);
-		print_counts(&cnts, &opts, "");
-		return EXIT_SUCCESS;
-	}
+	/* For alignment */
+	struct align max = {
+		.lines = 0,
+		.words = 0,
+		.bytes = 0,
+		.chars = 0,
+	};
 
 	FILE *fp;
 	bool useStdin;
+
+	/* Get max lengths */
 	for (int i = 0; i < argc; ++i) {
 		useStdin = strcmp(argv[i], "-") == 0;
 
@@ -160,7 +172,43 @@ wc_main(int argc, char *argv[])
 			fp = stdin;
 
 		cnts = get_counts(fp);
-		print_counts(&cnts, &opts, argv[i]);
+
+		if (log10(cnts.lines) > max.lines)
+			max.lines = log10(cnts.lines) + 1;
+		if (log10(cnts.words) > max.words)
+			max.words = log10(cnts.words) + 1;
+		if (log10(cnts.bytes) > max.bytes)
+			max.bytes = log10(cnts.bytes) + 1;
+		if (log10(cnts.chars) > max.chars)
+			max.chars = log10(cnts.chars) + 1;
+
+		if (!useStdin)
+			fclose(fp);
+	}
+
+	if (argc < 1) {
+		cnts = get_counts(stdin);
+		print_counts(&cnts, &opts, "", &max);
+		return EXIT_SUCCESS;
+	}
+
+	for (int i = 0; i < argc; ++i) {
+		useStdin = strcmp(argv[i], "-") == 0;
+
+		if (!useStdin) {
+			fp = fopen(argv[i], "r");
+			if (fp == NULL) {
+				perror(argv[i]);
+				ret = EXIT_FAILURE;
+				continue;
+			}
+		}
+
+		if (useStdin)
+			fp = stdin;
+
+		cnts = get_counts(fp);
+		print_counts(&cnts, &opts, argv[i], &max);
 
 		total.lines += cnts.lines;
 		total.words += cnts.words;
@@ -172,7 +220,7 @@ wc_main(int argc, char *argv[])
 	}
 
 	if (argc > 1)
-		print_counts(&total, &opts, "total");
+		print_counts(&total, &opts, "total", &max);
 
 	return ret;
 }
