@@ -24,9 +24,10 @@ static char *get_month_name(int month);
 static bool
 verify_number(char *num)
 {
-	while (*++num) {
+	while (*num) {
 		if (!isdigit(*num))
 			return false;
+		++num;
 	}
 
 	return true;
@@ -39,6 +40,9 @@ get_month_name(int month)
 	    "January", "February", "March", "April", "May", "June", "July",
 	    "August", "September", "October", "November", "December",
 	};
+
+	if (month < 1 || month > 12)
+		return "invalid month";
 
 	return (char *)months[month - 1];
 }
