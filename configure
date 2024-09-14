@@ -35,6 +35,7 @@ utils="
  time
  sleep
  strings
+ file
 "
 
 usage() {

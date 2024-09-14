@@ -39,7 +39,7 @@ and useful other utilities
 - false [COMPLETE]
 - fc
 - fg
-- file
+- file [WIP]
 - find
 - fold
 - fuser
