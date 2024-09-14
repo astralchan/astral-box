@@ -422,6 +422,8 @@ print_entry(char *entry, struct options *opts, int *status)
 		}
 	}
 
+	free(namelist);
+
 	putchar('\n');
 }
 
