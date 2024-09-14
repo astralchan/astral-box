@@ -5,7 +5,7 @@
 
 /*
  * TODO
- * - recursion (R)
+ * - recursion (R) [WIP]
  * - sorting (S, f, t)
  */
 
@@ -307,7 +307,12 @@ print_entry(char *entry, struct options *opts, int *status)
 
 	char name[PATH_MAX], nameTmp[PATH_MAX], colorName[PATH_MAX];
 	for (int i = 0; i < entries; ++i) {
-		sprintf(path, "%s/%s", entry, namelist[i]->d_name);
+		sprintf(path,
+		    "%s%s%s",
+		    entry,
+		    (entry[strlen(entry)-1] == '/') ? "" : "/",
+		    namelist[i]->d_name
+		);
 
 		if (namelist[i]->d_name[0] == '.' && !opts->a && !opts->A)
 			continue;
@@ -329,6 +334,16 @@ print_entry(char *entry, struct options *opts, int *status)
 				*status = EXIT_FAILURE;
 				return;
 			}
+		}
+
+		if (opts->R && S_ISDIR(st.st_mode)) {
+			if (strcmp(namelist[i]->d_name, ".") == 0 ||
+			    strcmp(namelist[i]->d_name, "..") == 0)
+				continue;
+
+			printf("%s:\n", path);
+			print_entry(path, opts, status);
+			putchar('\n');
 		}
 
 		/*
