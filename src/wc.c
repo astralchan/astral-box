@@ -170,13 +170,29 @@ wc_main(int argc, char *argv[])
 
 		cnts = get_counts(fp);
 
-		if (log10(cnts.lines) > max.lines)
+		total.lines += cnts.lines;
+		total.words += cnts.words;
+		total.bytes += cnts.bytes;
+		total.chars += cnts.chars;
+
+		if (log10(total.lines) > max.lines)
+			max.lines = log10(total.lines) + 1;
+		else if (log10(cnts.lines) > max.lines)
 			max.lines = log10(cnts.lines) + 1;
-		if (log10(cnts.words) > max.words)
+
+		if (log10(total.words) > max.words)
+			max.words = log10(total.words) + 1;
+		else if (log10(cnts.words) > max.words)
 			max.words = log10(cnts.words) + 1;
-		if (log10(cnts.bytes) > max.bytes)
+
+		if (log10(total.bytes) > max.bytes)
+			max.bytes = log10(total.bytes) + 1;
+		else if (log10(cnts.bytes) > max.bytes)
 			max.bytes = log10(cnts.bytes) + 1;
-		if (log10(cnts.chars) > max.chars)
+
+		if (log10(total.chars) > max.chars)
+			max.chars = log10(total.chars) + 1;
+		else if (log10(cnts.chars) > max.chars)
 			max.chars = log10(cnts.chars) + 1;
 
 		fclose(fp);
@@ -205,11 +221,6 @@ wc_main(int argc, char *argv[])
 
 		cnts = get_counts(fp);
 		print_counts(&cnts, &opts, argv[i], &max);
-
-		total.lines += cnts.lines;
-		total.words += cnts.words;
-		total.bytes += cnts.bytes;
-		total.chars += cnts.chars;
 
 		if (!useStdin)
 			fclose(fp);
