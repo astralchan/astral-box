@@ -341,7 +341,7 @@ print_entry(char *entry, struct options *opts, int *status)
 			    strcmp(namelist[i]->d_name, "..") == 0)
 				continue;
 
-			printf("%s:\n", path);
+			printf("\n%s:\n", path);
 			print_entry(path, opts, status);
 			putchar('\n');
 		}
@@ -637,13 +637,15 @@ ls_main(int argc, char *argv[])
 		opts.C = true;
 
 	if (argc < 1) {
+		if (opts.R)
+			puts(".:");
 		print_entry(".", &opts, &ret);
 		return ret;
 	}
 
 	int retTmp = EXIT_SUCCESS;
 	for (int i = 0; i < argc; ++i) {
-		if (argc > 1)
+		if (argc > 1 || opts.R)
 			printf("%s:\n", argv[i]);
 		print_entry(argv[i], &opts, &retTmp);
 		if (retTmp == EXIT_FAILURE)
