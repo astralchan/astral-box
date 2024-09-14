@@ -189,7 +189,7 @@ print_entry(char *entry, struct options *opts, int *status)
 		if (opts->s)
 			printf("%lu ", st.st_blocks);
 
-		append_char(entry, &st, opts);
+		char name[PATH_MAX];
 
 		/* Long format */
 		
@@ -239,7 +239,15 @@ print_entry(char *entry, struct options *opts, int *status)
 				printf("%s -> %s", entry, path);
 			}
 
-			fputs(entry, stdout);
+			strcpy(name, entry);
+
+			append_char(name, &st, opts);
+			fputs(name, stdout);
+		} else {
+			/* One entry per line */
+			strcpy(name, entry);
+			append_char(name, &st, opts);
+			fputs(name, stdout);
 		}
 
 		putchar('\n');
