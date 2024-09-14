@@ -157,19 +157,16 @@ wc_main(int argc, char *argv[])
 
 	/* Get max lengths */
 	for (int i = 0; i < argc; ++i) {
-		useStdin = strcmp(argv[i], "-") == 0;
+		/* Skip stdin */
+		if (strcmp(argv[i], "-") == 0)
+			continue;
 
-		if (!useStdin) {
-			fp = fopen(argv[i], "r");
-			if (fp == NULL) {
-				perror(argv[i]);
-				ret = EXIT_FAILURE;
-				continue;
-			}
+		fp = fopen(argv[i], "r");
+		if (fp == NULL) {
+			perror(argv[i]);
+			ret = EXIT_FAILURE;
+			continue;
 		}
-
-		if (useStdin)
-			fp = stdin;
 
 		cnts = get_counts(fp);
 
@@ -182,8 +179,7 @@ wc_main(int argc, char *argv[])
 		if (log10(cnts.chars) > max.chars)
 			max.chars = log10(cnts.chars) + 1;
 
-		if (!useStdin)
-			fclose(fp);
+		fclose(fp);
 	}
 
 	if (argc < 1) {
